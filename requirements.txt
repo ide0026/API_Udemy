@@ -1,5 +1,6 @@
 pandas
 yfinance
 altair
+pycountry
 newsapi-python
 streamlit==1.3.1
