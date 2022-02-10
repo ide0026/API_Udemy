@@ -2,13 +2,18 @@ import pandas as pd
 import yfinance as yf
 import altair as alt
 import streamlit as st
+import requests
+import pycountry
+import tkinter as tk
+from cProfile import label
+from cgitb import text
 from newsapi import NewsApiClient
 
-st.title('米国株価可視化アプリ')
+st.title('GAFA株価可視化& NEWS')
 
 st.sidebar.write("""
-# GAFA株価
-こちらは株価可視化ツールです。以下のオプションから表示日数を指定できます。
+# 株価
+こちらはGAFA株価可視化Webアプリです。以下のオプションから表示日数を指定できます。
 """)
 
 st.sidebar.write("""
@@ -48,10 +53,11 @@ try:
         'apple': 'AAPL',
         'facebook': 'FB',
         'google': 'GOOGL',
-        'microsoft': 'MSFT',
-        'netflix': 'NFLX',
+        #'microsoft': 'MSFT',
+        #'netflix': 'NFLX',
         'amazon': 'AMZN'
     }
+    
     df = get_data(days, tickers)
     companies = st.multiselect(
         '会社名を選択してください。',
@@ -78,26 +84,92 @@ try:
             )
         )
         st.altair_chart(chart, use_container_width=True)
+
 except:
     st.error(
-        "おっと！なにかエラーが起きているようです。"
+        "エラーが発生しました。ページを読み込み直してください"
     )
 
+#この先googleニュース取得
+def getNews_google():
+    newsapi = NewsApiClient(api_key='b4db0f52d6fe498e8153750a1ba090f9')
+    news_google = newsapi.get_everything(q='google')
+
+    articles_google = news_google["articles"]
+
+    my_articles_google = []
+    my_news_google = ""
+    google_result = st.empty()
+
+    for article_google in articles_google:
+        my_articles_google.append(article_google["title"])
+    
+    with google_result:
+        for i in range(10):
+            my_news_google = my_news_google + str(i) + "" + my_articles_google[i] + "\n"
+        st.write(my_news_google)
+
+#apple
+def getNews_apple():
+    newsapi = NewsApiClient(api_key='b4db0f52d6fe498e8153750a1ba090f9')
+    news_apple = newsapi.get_everything(q='apple')
+    articles_apple = news_apple["articles"]
+    my_articles_apple = []
+    my_news_apple = ""
+    apple_result = st.empty()
+
+    for article_apple in articles_apple:
+        my_articles_apple.append(article_apple["title"])
+    
+    with apple_result:
+        for x in range(10):
+            my_news_apple = my_news_apple + str(x) + "" + my_articles_apple[x] + "\n"
+        st.write(my_news_apple)
+
+#facebook
+def getNews_facebook():
+    newsapi = NewsApiClient(api_key='b4db0f52d6fe498e8153750a1ba090f9')
+    news_facebook = newsapi.get_everything(q='facebook')
+    articles_facebook = news_facebook["articles"]
+    my_articles_facebook = []
+    my_news_facebook = ""
+    facebook_result = st.empty()
+
+    for article_facebook in articles_facebook:
+        my_articles_facebook.append(article_facebook["title"])
+    
+    with facebook_result:
+        for y in range(10):
+            my_news_facebook = my_news_facebook + str(y) + "" + my_articles_facebook[y] + "\n"
+        st.write(my_news_facebook)
+
+#amazon
+def getNews_amazon():
+    newsapi = NewsApiClient(api_key='b4db0f52d6fe498e8153750a1ba090f9')
+    news_amazon = newsapi.get_everything(q='amazon')
+    articles_amazon = news_amazon["articles"]
+    my_articles_amazon = []
+    my_news_amazon = ""
+    amazon_result = st.empty()
+
+    for article_amazon in articles_amazon:
+        my_articles_amazon.append(article_amazon["title"])
+    
+    with amazon_result:
+        for z in range(10):
+            my_news_amazon = my_news_amazon + str(z) + "" + my_articles_amazon[z] + "\n"
+        st.write(my_news_amazon)
 
 
-#この先ニュース取得
-api = NewsApiClient(api_key="b4db0f52d6fe498e8153750a1ba090f9")
-all_articles = api.get_everything(q='google', sources='techcrunch')
+if __name__ == '__main__':
+    getNews_google()
 
-if( all_articles['totalResults'] > 0 ):
-    a = ("ニュース件数： {}".format(all_articles['totalResults']))
-    b = (all_articles['articles'][0])
-    '検索結果は',(a),(b),'です。'
-else:
-    '条件に合致したトップニュースはありません。'
+if __name__ == '__main__':
+    getNews_apple()
 
-#if( headlines['totalResults'] > 0 ):
-   # a = (headlines['articles'][0])
-    #'検索結果は',(a),'です。'
+if __name__ == '__main__':
+    getNews_facebook()
 
+if __name__ == '__main__':
+    getNews_amazon()
 
